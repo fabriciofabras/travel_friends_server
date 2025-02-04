@@ -14,7 +14,7 @@ const app = express();
 
 app.use(cors({
   origin: "https://travel-friends-mu.vercel.app", // Permitir solo este dominio
-  methods: "GET, POST, PUT, DELETE",
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: "Content-Type",
   credentials: false // Si usas cookies o autenticación con credenciales
 }));
