@@ -14,7 +14,7 @@ const app = express();
 
 app.use(cors({
   origin: "https://travel-friends-mu.vercel.app", // Permitir solo este dominio
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: "GET, POST, PUT, DELETE,OPTIONS",
   allowedHeaders: "Content-Type",
   credentials: false // Si usas cookies o autenticación con credenciales
 }));
@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, "build")));
 
 app.options("/process_payment", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "https://travel-friends-mu.vercel.app");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Credentials", "false");
   res.sendStatus(204); // Sin contenido, pero permite continuar
@@ -40,7 +40,7 @@ app.options("/process_payment", (req, res) => {
 
 app.post('/process_payment', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', "https://travel-friends-mu.vercel.app");
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Credentials', false);
   console.log("req", req.body);
