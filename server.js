@@ -13,11 +13,14 @@ const payment = new Payment(client);
 const app = express();
 
 app.use(cors({
-  origin: "https://travel-friends-mu.vercel.app", // Permitir solo este dominio
-  methods: "GET, POST, PUT, DELETE,OPTIONS",
-  allowedHeaders: "Content-Type",
-  credentials: false // Si usas cookies o autenticación con credenciales
+  origin: "https://travel-friends-mu.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true // Esto solo si necesitas enviar cookies o autenticación
 }));
+
+app.options('*', cors()); // Maneja preflight para cualquier endpoint
+
 
 // Definir __dirname manualmente
 const __filename = fileURLToPath(import.meta.url);
@@ -28,15 +31,6 @@ const __dirname = path.dirname(__filename);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
-
-
-app.options("/process_payment", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://travel-friends-mu.vercel.app");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Allow-Credentials", "false");
-  res.sendStatus(204); // Sin contenido, pero permite continuar
-});
 
 app.post('/process_payment', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', "https://travel-friends-mu.vercel.app");
@@ -81,10 +75,6 @@ app.post('/process_payment', async (req, res) => {
 });
 
 const port = 3000;
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
