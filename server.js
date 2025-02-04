@@ -22,11 +22,23 @@ const __dirname = path.dirname(__filename);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
-app.use(cors());
+app.use(cors({
+  origin: "https://travel-friends-mu.vercel.app", // Permitir solo este dominio
+  methods: "GET, POST, PUT, DELETE",
+  allowedHeaders: "Content-Type",
+  credentials: true // Si usas cookies o autenticación con credenciales
+}));
 
+app.options("/process_payment", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://travel-friends-mu.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(204); // Sin contenido, pero permite continuar
+});
 
 app.post('/process_payment', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', "https://travel-friends-mu.vercel.app");
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Credentials', true);
