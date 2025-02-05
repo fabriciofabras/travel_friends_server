@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url';
 
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
-const client = new MercadoPagoConfig({ accessToken: 'TEST-1634057283524851-012810-0bcf5b2ef2f2146d7a891106920a3a37-353348367', options: { timeout: 5000 } });
+// const client = new MercadoPagoConfig({ accessToken: 'TEST-1634057283524851-012810-0bcf5b2ef2f2146d7a891106920a3a37-353348367', options: { timeout: 5000 } });
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-1634057283524851-012810-4581f90affdc1c47afc13aebc8c0d323-353348367', options: { timeout: 5000 } });
 
 const payment = new Payment(client);
 
