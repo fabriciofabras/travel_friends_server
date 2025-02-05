@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
-import mercadopago from 'mercadopago';
 
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
@@ -13,7 +12,7 @@ const payment = new Payment(client);
 const app = express();
 
 app.use(cors({
-  origin: "https://travel-friends-mu.vercel.app",
+  origin: ["https://travel-friends-mu.vercel.app", "http://localhost:3001"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
   credentials: true // Esto solo si necesitas enviar cookies o autenticación
@@ -33,11 +32,11 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
 
 app.post('/process_payment', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', "https://travel-friends-mu.vercel.app");
+ /*  res.setHeader('Access-Control-Allow-Origin', "https://travel-friends-mu.vercel.app");
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Credentials', false);
-  console.log("req", req.body);
+  console.log("req", req.body); */
 
   const request = req.body;
 
