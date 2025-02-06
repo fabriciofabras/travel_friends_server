@@ -13,10 +13,9 @@ const payment = new Payment(client);
 const app = express();
 
 app.use(cors({
-  origin: ["https://travel-friends-mu.vercel.app", "http://localhost:3001"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  origin: "*",
+  methods: ["POST", "GET"],
   allowedHeaders: ["Content-Type"],
-  credentials: true // Esto solo si necesitas enviar cookies o autenticación
 }));
 
 app.options('*', cors()); // Maneja preflight para cualquier endpoint
