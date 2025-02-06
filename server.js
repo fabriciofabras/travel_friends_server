@@ -21,9 +21,15 @@ app.use(cors({
 
 app.options('*', cors()); // Maneja preflight para cualquier endpoint
 
+// Definir __dirname manualmente
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 // Configurar middleware y rutas
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "build")));
 
 app.post('/process_payment', async (req, res) => {
  /*  res.setHeader('Access-Control-Allow-Origin', "https://travel-friends-mu.vercel.app");
@@ -31,8 +37,16 @@ app.post('/process_payment', async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Credentials', false);
   console.log("req", req.body); */
+  console.log('req')
+  console.log(req)
 
+  console.log('req.body')
+  console.log(req.body)
+
+
+  console.log('request')
   const request = req.body;
+  console.log(request)
 
   try {
     const paymentResponse = await payment.create({
