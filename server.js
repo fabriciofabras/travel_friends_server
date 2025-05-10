@@ -90,6 +90,28 @@ app.get('/api/hotels', async (req, res) => {
   }
 });
 
+app.get('/api/hotelImages', async (req, res) => {
+  const query = req.query.q;
+
+  try {
+    const response = await axios.get(
+      `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(query)}/photos?key=${TRIPADVISOR_API_KEY}&limit=16`,
+      {
+        headers: {
+          accept: 'application/json',
+          origin: 'https://travel-friends-mu.vercel.app/',   // opcional si tu API key lo requiere
+          referer: 'https://travel-friends-mu.vercel.app/'   // opcional si tu API key lo requiere
+        }
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error al obtener datos de TripAdvisor:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Error al consultar TripAdvisor' });
+  }
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
