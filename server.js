@@ -51,7 +51,7 @@ app.post('/process_payment', async (req, res) => {
     });
 
     console.log("Respuesta de Mercado Pago:", paymentResponse);
-    
+
     // Enviar la respuesta al frontend
     res.status(200).json({
       message: "Pago procesado con éxito",
@@ -70,12 +70,15 @@ const TRIPADVISOR_API_KEY = '519AAFC09925436194F4B5798A71F9A2';
 
 app.get('/api/hotels', async (req, res) => {
   const query = req.query.q;
-
+  console.log('rapid api')
   try {
     const response = await axios.get(
-      `https://api.content.tripadvisor.com/api/v1/location/search?key=${TRIPADVISOR_API_KEY}&searchQuery=${encodeURIComponent(query)}&category=hotels`,
+      //  `https://api.content.tripadvisor.com/api/v1/location/search?key=${TRIPADVISOR_API_KEY}&searchQuery=${encodeURIComponent(query)}&category=hotels`,
+      `https://agoda-com.p.rapidapi.com/hotels/auto-complete?query=${encodeURIComponent(query)}`,
       {
         headers: {
+          'X-Rapidapi-Host': 'agoda-com.p.rapidapi.com',
+          'X-Rapidapi-Key': '36ac3a75d8msh52076627dd5d758p1a7ce9jsned5f12eca71b',
           accept: 'application/json',
           origin: 'https://travel-friends-mu.vercel.app/',   // opcional si tu API key lo requiere
           referer: 'https://travel-friends-mu.vercel.app/'   // opcional si tu API key lo requiere
@@ -95,12 +98,15 @@ app.get('/api/hotelImages', async (req, res) => {
 
   try {
     const response = await axios.get(
-      `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(query)}/photos?key=${TRIPADVISOR_API_KEY}&limit=16`,
+      `https://agoda-com.p.rapidapi.com/hotels/details?propertyId=${encodeURIComponent(query)}`,
+      // `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(query)}/photos?key=${TRIPADVISOR_API_KEY}&limit=16`,
       {
         headers: {
           accept: 'application/json',
           origin: 'https://travel-friends-mu.vercel.app/',   // opcional si tu API key lo requiere
-          referer: 'https://travel-friends-mu.vercel.app/'   // opcional si tu API key lo requiere
+          referer: 'https://travel-friends-mu.vercel.app/',   // opcional si tu API key lo requiere
+            'X-Rapidapi-Host': 'agoda-com.p.rapidapi.com',
+          'X-Rapidapi-Key': '36ac3a75d8msh52076627dd5d758p1a7ce9jsned5f12eca71b',
         }
       }
     );
