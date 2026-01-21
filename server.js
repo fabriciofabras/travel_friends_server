@@ -161,7 +161,7 @@ app.get('/api/hotelImages', cors({
           'X-Rapidapi-Host': 'agoda-com.p.rapidapi.com',
           'X-Rapidapi-Key': '91cdfbdc02msh6e450e4e8f26025p1737edjsn557a41c143f9',
         },
-        timeout: 10000 // 10 segundos
+        timeout: 20000 // 10 segundos
       }
     );
     res.json(response.data);
