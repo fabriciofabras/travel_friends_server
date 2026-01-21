@@ -42,10 +42,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
-app.use(cors({
-  origin: 'https://travelfriends.com.mx',
-  credentials: true,
-}));
+app.use(cors());
 
 
 app.post('/process_payment', async (req, res) => {
@@ -132,7 +129,7 @@ app.get('/api/hotels', async (req, res) => {
       {
         headers: {
           'X-Rapidapi-Host': 'agoda-com.p.rapidapi.com',
-          'X-Rapidapi-Key': '36ac3a75d8msh52076627dd5d758p1a7ce9jsned5f12eca71b',
+          'X-Rapidapi-Key': '91cdfbdc02msh6e450e4e8f26025p1737edjsn557a41c143f9',
           accept: 'application/json',
           origin: 'https://travel-friends-mu.vercel.app/',   // opcional si tu API key lo requiere
           referer: 'https://travel-friends-mu.vercel.app/'   // opcional si tu API key lo requiere
@@ -153,24 +150,8 @@ app.get('/api/hotelImages', cors({
 }), async (req, res) => {
   const query = req.query.q;
 
-  // Reintentos automáticos y mejor manejo de errores SOLO para hotelImages
-  async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
-    for (let i = 0; i < retries; i++) {
-      try {
-        return await axios.get(url, options);
-      } catch (error) {
-        if (i === retries - 1) throw error;
-        if ([429, 500, 502, 503, 504].includes(error.response?.status)) {
-          await new Promise(res => setTimeout(res, delay));
-        } else {
-          throw error;
-        }
-      }
-    }
-  }
-
   try {
-    const response = await fetchWithRetry(
+    const response = await axios.get(
       `https://agoda-com.p.rapidapi.com/hotels/details?propertyId=${encodeURIComponent(query)}`,
       {
         headers: {
@@ -178,19 +159,15 @@ app.get('/api/hotelImages', cors({
           origin: 'https://travel-friends-mu.vercel.app/',
           referer: 'https://travel-friends-mu.vercel.app/',
           'X-Rapidapi-Host': 'agoda-com.p.rapidapi.com',
-          'X-Rapidapi-Key': '36ac3a75d8msh52076627dd5d758p1a7ce9jsned5f12eca71b',
+          'X-Rapidapi-Key': '91cdfbdc02msh6e450e4e8f26025p1737edjsn557a41c143f9',
         },
-        timeout: 10000
+        timeout: 10000 // 10 segundos
       }
     );
     res.json(response.data);
   } catch (error) {
-    const status = error.response?.status;
-    const message = error.response?.data?.message || error.message;
-    let userMessage = 'Error al consultar RapidAPI.';
-    if (status === 429) userMessage = 'Límite de peticiones alcanzado, intenta más tarde.';
-    if ([500, 502, 503, 504].includes(status)) userMessage = 'El servicio externo está temporalmente fuera de línea, intenta más tarde.';
-    res.status(status || 500).json({ error: userMessage, details: message });
+    console.error('Error al obtener datos de TripAdvisor:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Error al consultar TripAdvisor' });
   }
 });
 
