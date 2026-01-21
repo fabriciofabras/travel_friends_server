@@ -153,25 +153,44 @@ app.get('/api/hotelImages', cors({
 }), async (req, res) => {
   const query = req.query.q;
 
+  // Reintentos automáticos y mejor manejo de errores SOLO para hotelImages
+  async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await axios.get(url, options);
+      } catch (error) {
+        if (i === retries - 1) throw error;
+        if ([429, 500, 502, 503, 504].includes(error.response?.status)) {
+          await new Promise(res => setTimeout(res, delay));
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
   try {
-    const response = await axios.get(
+    const response = await fetchWithRetry(
       `https://agoda-com.p.rapidapi.com/hotels/details?propertyId=${encodeURIComponent(query)}`,
-      // `https://api.content.tripadvisor.com/api/v1/location/${encodeURIComponent(query)}/photos?key=${TRIPADVISOR_API_KEY}&limit=16`,
       {
         headers: {
           accept: 'application/json',
-          origin: 'https://travel-friends-mu.vercel.app/',   // opcional si tu API key lo requiere
-          referer: 'https://travel-friends-mu.vercel.app/',   // opcional si tu API key lo requiere
-            'X-Rapidapi-Host': 'agoda-com.p.rapidapi.com',
+          origin: 'https://travel-friends-mu.vercel.app/',
+          referer: 'https://travel-friends-mu.vercel.app/',
+          'X-Rapidapi-Host': 'agoda-com.p.rapidapi.com',
           'X-Rapidapi-Key': '36ac3a75d8msh52076627dd5d758p1a7ce9jsned5f12eca71b',
-        }
+        },
+        timeout: 10000
       }
     );
-
     res.json(response.data);
   } catch (error) {
-    console.error('Error al obtener datos de TripAdvisor:', error.response?.data || error.message);
-    res.status(500).json({ error: 'Error al consultar TripAdvisor' });
+    const status = error.response?.status;
+    const message = error.response?.data?.message || error.message;
+    let userMessage = 'Error al consultar RapidAPI.';
+    if (status === 429) userMessage = 'Límite de peticiones alcanzado, intenta más tarde.';
+    if ([500, 502, 503, 504].includes(status)) userMessage = 'El servicio externo está temporalmente fuera de línea, intenta más tarde.';
+    res.status(status || 500).json({ error: userMessage, details: message });
   }
 });
 
